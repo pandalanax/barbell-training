@@ -292,7 +292,6 @@
         Keep Same Weight
       </button>
     </div>
-  </div>
 
     <div class="card">
       <div class="section-title">History</div>
@@ -312,10 +311,10 @@
       }
     };
 
-    let settings = loadSettings();
+    let settings = null;
     let currentExercise = 'squat';
     let completedSets = [false, false, false];
-    let data = loadProgress();
+    let data = null;
     let history = [];
 
     async function loadHistory() {
@@ -479,8 +478,8 @@
 
       // Draw lines and points for each exercise
       Object.keys(byExercise).forEach(exercise => {
-        const data = byExercise[exercise];
-        if (data.length === 0) return;
+        const points = byExercise[exercise];
+        if (points.length === 0) return;
 
         const color = EXERCISE_COLORS[exercise];
         ctx.strokeStyle = color;
@@ -489,7 +488,7 @@
 
         // Draw line
         ctx.beginPath();
-        data.forEach((point, i) => {
+        points.forEach((point, i) => {
           const x = toX(point.date);
           const y = toY(point.weight);
           if (i === 0) ctx.moveTo(x, y);
@@ -498,7 +497,7 @@
         ctx.stroke();
 
         // Draw points
-        data.forEach(point => {
+        points.forEach(point => {
           const x = toX(point.date);
           const y = toY(point.weight);
           ctx.beginPath();
@@ -516,24 +515,16 @@
       `).join('');
     }
 
-    async function loadSettingsAsync() {
+    async function loadSettings() {
       try {
         const res = await fetch('/api/settings');
         return await res.json();
       } catch (e) {
-        // Fallback to localStorage if server unavailable
-        const saved = localStorage.getItem('barbell-settings');
-        return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+        return DEFAULT_SETTINGS;
       }
     }
 
-    function loadSettings() {
-      // Sync version for initial load, will be updated async
-      const saved = localStorage.getItem('barbell-settings');
-      return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
-    }
-
-    async function loadProgressAsync() {
+    async function loadProgress() {
       try {
         const res = await fetch('/api/progress');
         return await res.json();
@@ -544,15 +535,6 @@
           deadlift: { weight: settings.exercises.deadlift.startingWeight }
         };
       }
-    }
-
-    function loadProgress() {
-      // Sync fallback
-      return {
-        squat: { weight: settings.exercises.squat.startingWeight },
-        press: { weight: settings.exercises.press.startingWeight },
-        deadlift: { weight: settings.exercises.deadlift.startingWeight }
-      };
     }
 
     async function saveProgress() {
@@ -774,10 +756,10 @@
       render();
     });
 
-    // Reload settings when returning from settings page
+    // Reload data when returning from settings page
     async function reloadAndRender() {
-      settings = await loadSettingsAsync();
-      data = await loadProgressAsync();
+      settings = await loadSettings();
+      data = await loadProgress();
       await loadHistory();
       render();
     }
@@ -791,8 +773,8 @@
 
     // Initial load and render
     (async () => {
-      settings = await loadSettingsAsync();
-      data = await loadProgressAsync();
+      settings = await loadSettings();
+      data = await loadProgress();
       await loadHistory();
       render();
     })();
