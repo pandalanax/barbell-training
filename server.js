@@ -2,10 +2,17 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3000;
-const HISTORY_FILE = path.join(__dirname, 'history.json');
-const SETTINGS_FILE = path.join(__dirname, 'settings.json');
-const PROGRESS_FILE = path.join(__dirname, 'progress.json');
+const PORT = process.env.PORT || 3000;
+const DATA_DIR = process.env.DATA_DIR || __dirname;
+
+// Ensure data directory exists
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+const HISTORY_FILE = path.join(DATA_DIR, 'history.json');
+const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
+const PROGRESS_FILE = path.join(DATA_DIR, 'progress.json');
 
 const DEFAULT_SETTINGS = {
   plates: [10, 5, 2.5, 2.5, 1.25],

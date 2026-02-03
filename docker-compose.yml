@@ -1,0 +1,9 @@
+services:
+  barbell:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATA_DIR=/app/data

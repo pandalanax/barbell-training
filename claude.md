@@ -4,8 +4,14 @@ A simple web app for tracking barbell training with warmup calculations and line
 
 ## Quick Start
 
+### Node.js
 ```bash
 node server.js
+```
+
+### Docker
+```bash
+docker compose up -d
 ```
 
 Open http://localhost:3000
