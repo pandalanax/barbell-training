@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Barbell Training</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #e94560;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .card {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 0.85rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #ccc;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #0f3460;
+      background: #1a1a2e;
+      color: #eee;
+      font-size: 1rem;
+      border-radius: 8px;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #e94560;
+    }
+
+    .plates-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .plate-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f3460;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .plate-remove {
+      background: none;
+      border: none;
+      color: #e94560;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .add-plate {
+      display: flex;
+      gap: 8px;
+    }
+
+    .add-plate input {
+      flex: 1;
+    }
+
+    .add-btn {
+      padding: 12px 20px;
+      border: none;
+      background: #0f3460;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .exercise-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: end;
+      padding: 12px 0;
+      border-bottom: 1px solid #0f3460;
+    }
+
+    .exercise-row:last-child {
+      border-bottom: none;
+    }
+
+    .exercise-name {
+      font-weight: 600;
+      align-self: center;
+    }
+
+    .exercise-row input {
+      padding: 10px;
+    }
+
+    .exercise-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      background: #e94560;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .save-btn:hover {
+      background: #ff6b6b;
+    }
+
+    .reset-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e94560;
+      background: transparent;
+      color: #e94560;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f3460;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <button class="back-btn" onclick="location.href='index.html'">&larr;</button>
+      <h1>Settings</h1>
+    </header>
+
+    <div class="card">
+      <div class="section-title">Available Plates (per side)</div>
+      <div class="plates-list" id="plates-list"></div>
+      <div class="add-plate">
+        <input type="number" id="new-plate" step="0.25" min="0.25" placeholder="Weight (kg)">
+        <button class="add-btn" id="add-plate-btn">Add</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Exercises</div>
+      <div class="exercise-header">
+        <span>Exercise</span>
+        <span>Start (kg)</span>
+        <span>Progress (kg)</span>
+      </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Squat</span>
+        <input type="number" id="squat-start" step="2.5" min="0">
+        <input type="number" id="squat-progress" step="0.5" min="0.5">
+      </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Press</span>
+        <input type="number" id="press-start" step="2.5" min="0">
+        <input type="number" id="press-progress" step="0.5" min="0.5">
+      </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Deadlift</span>
+        <input type="number" id="deadlift-start" step="2.5" min="0">
+        <input type="number" id="deadlift-progress" step="0.5" min="0.5">
+      </div>
+    </div>
+
+    <button class="save-btn" id="save-btn">Save Settings</button>
+    <button class="reset-btn" id="reset-progress-btn">Reset Progress to Starting Weights</button>
+    <button class="reset-btn" id="reset-btn">Reset Settings to Defaults</button>
+  </div>
+
+  <div class="toast" id="toast">Settings saved!</div>
+
+  <script>
+    const DEFAULT_SETTINGS = {
+      plates: [10, 5, 2.5, 2.5, 1.25],
+      exercises: {
+        squat: { startingWeight: 20, progression: 5 },
+        press: { startingWeight: 10, progression: 2.5 },
+        deadlift: { startingWeight: 30, progression: 5 }
+      }
+    };
+
+    let settings = DEFAULT_SETTINGS;
+    let plates = [];
+
+    async function loadSettings() {
+      try {
+        const res = await fetch('/api/settings');
+        settings = await res.json();
+      } catch (e) {
+        settings = { ...DEFAULT_SETTINGS };
+      }
+      plates = [...settings.plates];
+    }
+
+    async function saveSettings() {
+      try {
+        await fetch('/api/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(settings)
+        });
+      } catch (e) {
+        console.error('Failed to save settings');
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function renderPlates() {
+      const list = document.getElementById('plates-list');
+      list.innerHTML = plates
+        .map((p, i) => `
+          <span class="plate-tag">
+            ${p}kg
+            <button class="plate-remove" data-index="${i}">&times;</button>
+          </span>
+        `).join('');
+    }
+
+    function populateForm() {
+      document.getElementById('squat-start').value = settings.exercises.squat.startingWeight;
+      document.getElementById('squat-progress').value = settings.exercises.squat.progression;
+      document.getElementById('press-start').value = settings.exercises.press.startingWeight;
+      document.getElementById('press-progress').value = settings.exercises.press.progression;
+      document.getElementById('deadlift-start').value = settings.exercises.deadlift.startingWeight;
+      document.getElementById('deadlift-progress').value = settings.exercises.deadlift.progression;
+      plates = [...settings.plates];
+      renderPlates();
+    }
+
+    // Event listeners
+    document.getElementById('plates-list').addEventListener('click', (e) => {
+      if (e.target.classList.contains('plate-remove')) {
+        const index = parseInt(e.target.dataset.index);
+        plates.splice(index, 1);
+        renderPlates();
+      }
+    });
+
+    document.getElementById('add-plate-btn').addEventListener('click', () => {
+      const input = document.getElementById('new-plate');
+      const value = parseFloat(input.value);
+      if (value > 0) {
+        plates.push(value);
+        plates.sort((a, b) => b - a);
+        renderPlates();
+        input.value = '';
+      }
+    });
+
+    document.getElementById('new-plate').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('add-plate-btn').click();
+      }
+    });
+
+    document.getElementById('save-btn').addEventListener('click', async () => {
+      settings = {
+        plates: [...plates],
+        exercises: {
+          squat: {
+            startingWeight: parseFloat(document.getElementById('squat-start').value) || DEFAULT_SETTINGS.exercises.squat.startingWeight,
+            progression: parseFloat(document.getElementById('squat-progress').value) || DEFAULT_SETTINGS.exercises.squat.progression
+          },
+          press: {
+            startingWeight: parseFloat(document.getElementById('press-start').value) || DEFAULT_SETTINGS.exercises.press.startingWeight,
+            progression: parseFloat(document.getElementById('press-progress').value) || DEFAULT_SETTINGS.exercises.press.progression
+          },
+          deadlift: {
+            startingWeight: parseFloat(document.getElementById('deadlift-start').value) || DEFAULT_SETTINGS.exercises.deadlift.startingWeight,
+            progression: parseFloat(document.getElementById('deadlift-progress').value) || DEFAULT_SETTINGS.exercises.deadlift.progression
+          }
+        }
+      };
+      await saveSettings();
+
+      // Also update training progress to match starting weights
+      const progress = {
+        squat: { weight: settings.exercises.squat.startingWeight },
+        press: { weight: settings.exercises.press.startingWeight },
+        deadlift: { weight: settings.exercises.deadlift.startingWeight }
+      };
+      await fetch('/api/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(progress)
+      });
+
+      showToast('Settings saved!');
+    });
+
+    document.getElementById('reset-progress-btn').addEventListener('click', async () => {
+      if (confirm('Reset all exercise weights to starting weights?')) {
+        const progress = {
+          squat: { weight: parseFloat(document.getElementById('squat-start').value) || DEFAULT_SETTINGS.exercises.squat.startingWeight },
+          press: { weight: parseFloat(document.getElementById('press-start').value) || DEFAULT_SETTINGS.exercises.press.startingWeight },
+          deadlift: { weight: parseFloat(document.getElementById('deadlift-start').value) || DEFAULT_SETTINGS.exercises.deadlift.startingWeight }
+        };
+        await fetch('/api/progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(progress)
+        });
+        showToast('Progress reset!');
+      }
+    });
+
+    document.getElementById('reset-btn').addEventListener('click', async () => {
+      if (confirm('Reset all settings to defaults?')) {
+        settings = { ...DEFAULT_SETTINGS, plates: [...DEFAULT_SETTINGS.plates], exercises: JSON.parse(JSON.stringify(DEFAULT_SETTINGS.exercises)) };
+        await saveSettings();
+        populateForm();
+        showToast('Settings reset!');
+      }
+    });
+
+    // Initialize
+    (async () => {
+      await loadSettings();
+      populateForm();
+    })();
+  </script>
+</body>
+</html>
