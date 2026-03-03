@@ -230,7 +230,7 @@
       <div class="section-title">Exercises</div>
       <div class="exercise-header">
         <span>Exercise</span>
-        <span>Start (kg)</span>
+        <span>Current (kg)</span>
         <span>Progress (kg)</span>
       </div>
       <div class="exercise-row">
@@ -251,7 +251,7 @@
     </div>
 
     <button class="save-btn" id="save-btn">Save Settings</button>
-    <button class="reset-btn" id="reset-progress-btn">Reset Progress to Starting Weights</button>
+    <button class="reset-btn" id="reset-progress-btn">Reset Progress to Current Field Values</button>
     <button class="reset-btn" id="reset-btn">Reset Settings to Defaults</button>
   </div>
 
@@ -268,6 +268,7 @@
     };
 
     let settings = DEFAULT_SETTINGS;
+    let progress = null;
     let plates = [];
 
     async function loadSettings() {
@@ -278,6 +279,15 @@
         settings = { ...DEFAULT_SETTINGS };
       }
       plates = [...settings.plates];
+    }
+
+    async function loadProgress() {
+      try {
+        const res = await fetch('/api/progress');
+        progress = await res.json();
+      } catch (e) {
+        progress = null;
+      }
     }
 
     async function saveSettings() {
@@ -311,11 +321,15 @@
     }
 
     function populateForm() {
-      document.getElementById('squat-start').value = settings.exercises.squat.startingWeight;
+      // Show current progress weights as starting weights if available
+      const sqWeight = progress ? progress.squat.weight : settings.exercises.squat.startingWeight;
+      const prWeight = progress ? progress.press.weight : settings.exercises.press.startingWeight;
+      const dlWeight = progress ? progress.deadlift.weight : settings.exercises.deadlift.startingWeight;
+      document.getElementById('squat-start').value = sqWeight;
       document.getElementById('squat-progress').value = settings.exercises.squat.progression;
-      document.getElementById('press-start').value = settings.exercises.press.startingWeight;
+      document.getElementById('press-start').value = prWeight;
       document.getElementById('press-progress').value = settings.exercises.press.progression;
-      document.getElementById('deadlift-start').value = settings.exercises.deadlift.startingWeight;
+      document.getElementById('deadlift-start').value = dlWeight;
       document.getElementById('deadlift-progress').value = settings.exercises.deadlift.progression;
       plates = [...settings.plates];
       renderPlates();
@@ -367,18 +381,7 @@
       };
       await saveSettings();
 
-      // Also update training progress to match starting weights
-      const progress = {
-        squat: { weight: settings.exercises.squat.startingWeight },
-        press: { weight: settings.exercises.press.startingWeight },
-        deadlift: { weight: settings.exercises.deadlift.startingWeight }
-      };
-      await fetch('/api/progress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(progress)
-      });
-
+      // Do NOT overwrite progress - settings save only changes settings
       showToast('Settings saved!');
     });
 
@@ -410,6 +413,7 @@
     // Initialize
     (async () => {
       await loadSettings();
+      await loadProgress();
       populateForm();
     })();
   </script>

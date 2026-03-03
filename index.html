@@ -124,13 +124,35 @@
 
     .warmup-item {
       display: flex;
-      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
       padding: 10px 0;
       border-bottom: 1px solid #0f3460;
     }
 
     .warmup-item:last-child {
       border-bottom: none;
+    }
+
+    .warmup-checkbox {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      accent-color: #e94560;
+      flex-shrink: 0;
+    }
+
+    .warmup-info {
+      display: flex;
+      justify-content: space-between;
+      flex: 1;
+    }
+
+    .warmup-complete .warmup-weight,
+    .warmup-complete .warmup-plates,
+    .warmup-complete .warmup-reps {
+      text-decoration: line-through;
+      color: #888;
     }
 
     .warmup-weight {
@@ -314,6 +336,7 @@
     let settings = null;
     let currentExercise = 'squat';
     let completedSets = [false, false, false];
+    let completedWarmups = [false, false, false, false, false];
     let data = null;
     let history = [];
 
@@ -588,6 +611,13 @@
       return 0;
     }
 
+    function getEffectiveProgression(exercise) {
+      const configured = settings.exercises[exercise].progression;
+      const smallestPlate = Math.min(...settings.plates);
+      const minStep = smallestPlate * 2; // plates go on both sides
+      return Math.max(configured, minStep);
+    }
+
     function formatPlates(plates) {
       if (!plates || plates.length === 0) return 'no plates';
       return plates.join(' + ');
@@ -624,7 +654,7 @@
       }
 
       // Update buttons state
-      const increment = settings.exercises[currentExercise].progression;
+      const increment = getEffectiveProgression(currentExercise);
       const nextWeight = weight + increment;
       const prevWeight = weight - increment;
       const smallestPlate = Math.min(...settings.plates);
@@ -636,24 +666,30 @@
       const warmupList = document.getElementById('warmup-list');
       const warmup = generateWarmup(weight);
       warmupList.innerHTML = warmup.map((set, i) => {
+        const checked = completedWarmups[i] ? 'checked' : '';
+        const completeClass = completedWarmups[i] ? 'warmup-complete' : '';
         if (set.emptyBar) {
           return `
-            <li class="warmup-item">
-              <div>
+            <li class="warmup-item ${completeClass}">
+              <input type="checkbox" class="warmup-checkbox" data-warmup="${i}" ${checked}>
+              <div class="warmup-info">
                 <span class="warmup-weight">Empty bar</span>
+                <span class="warmup-reps">&times; ${set.reps}</span>
               </div>
-              <span class="warmup-reps">× ${set.reps}</span>
             </li>
           `;
         }
         const plates = calculatePlates(set.weight);
         return `
-          <li class="warmup-item">
-            <div>
-              <span class="warmup-weight">${set.weight}kg</span>
-              <span class="warmup-plates">(${formatPlates(plates)})</span>
+          <li class="warmup-item ${completeClass}">
+            <input type="checkbox" class="warmup-checkbox" data-warmup="${i}" ${checked}>
+            <div class="warmup-info">
+              <div>
+                <span class="warmup-weight">${set.weight}kg</span>
+                <span class="warmup-plates">(${formatPlates(plates)})</span>
+              </div>
+              <span class="warmup-reps">&times; ${set.reps}</span>
             </div>
-            <span class="warmup-reps">× ${set.reps}</span>
           </li>
         `;
       }).join('');
@@ -677,7 +713,7 @@
       const allComplete = completedSets.slice(0, requiredSets).every(s => s);
       const progressBtn = document.getElementById('progress-btn');
       const keepBtn = document.getElementById('keep-btn');
-      const nextWeightValue = weight + settings.exercises[currentExercise].progression;
+      const nextWeightValue = weight + getEffectiveProgression(currentExercise);
       if (allComplete) {
         if (calculatePlates(nextWeightValue) !== null) {
           progressBtn.style.display = 'block';
@@ -700,30 +736,41 @@
       tab.addEventListener('click', () => {
         currentExercise = tab.dataset.exercise;
         completedSets = [false, false, false];
+        completedWarmups = [false, false, false, false, false];
         render();
       });
     });
 
     document.getElementById('increase-btn').addEventListener('click', async () => {
-      const increment = settings.exercises[currentExercise].progression;
+      const increment = getEffectiveProgression(currentExercise);
       const newWeight = data[currentExercise].weight + increment;
       if (calculatePlates(newWeight) !== null) {
         data[currentExercise].weight = newWeight;
         completedSets = [false, false, false];
+        completedWarmups = [false, false, false, false, false];
         await saveProgress();
         render();
       }
     });
 
     document.getElementById('decrease-btn').addEventListener('click', async () => {
-      const increment = settings.exercises[currentExercise].progression;
+      const increment = getEffectiveProgression(currentExercise);
       const newWeight = data[currentExercise].weight - increment;
       const smallestPlate = Math.min(...settings.plates);
       const minWeight = smallestPlate * 2;
       if (newWeight >= minWeight) {
         data[currentExercise].weight = newWeight;
         completedSets = [false, false, false];
+        completedWarmups = [false, false, false, false, false];
         await saveProgress();
+        render();
+      }
+    });
+
+    document.getElementById('warmup-list').addEventListener('change', (e) => {
+      if (e.target.classList.contains('warmup-checkbox')) {
+        const warmupIndex = parseInt(e.target.dataset.warmup);
+        completedWarmups[warmupIndex] = e.target.checked;
         render();
       }
     });
@@ -740,11 +787,12 @@
       const currentWeight = data[currentExercise].weight;
       await logWorkout(currentExercise, currentWeight);
 
-      const increment = settings.exercises[currentExercise].progression;
+      const increment = getEffectiveProgression(currentExercise);
       const newWeight = currentWeight + increment;
       if (calculatePlates(newWeight) !== null) {
         data[currentExercise].weight = newWeight;
         completedSets = [false, false, false];
+        completedWarmups = [false, false, false, false, false];
         await saveProgress();
         render();
       }
@@ -753,6 +801,7 @@
     document.getElementById('keep-btn').addEventListener('click', async () => {
       await logWorkout(currentExercise, data[currentExercise].weight);
       completedSets = [false, false, false];
+      completedWarmups = [false, false, false, false, false];
       render();
     });
 
