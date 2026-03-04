@@ -16,6 +16,7 @@ const PROGRESS_FILE = path.join(DATA_DIR, 'progress.json');
 
 const DEFAULT_SETTINGS = {
   plates: [10, 5, 2.5, 2.5, 1.25],
+  restTimer: 180,
   exercises: {
     squat: { startingWeight: 20, progression: 5 },
     press: { startingWeight: 10, progression: 2.5 },
