@@ -89,6 +89,13 @@
       font-weight: bold;
     }
 
+    .timer-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #e94560;
+      font-variant-numeric: tabular-nums;
+    }
+
     .weight-controls {
       display: flex;
       gap: 8px;
@@ -230,6 +237,23 @@
       color: #eee;
     }
 
+    .fail-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e94560;
+      background: transparent;
+      color: #e94560;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .fail-btn:hover {
+      background: #e94560;
+      color: #fff;
+    }
+
     .chart-legend {
       display: flex;
       gap: 16px;
@@ -313,6 +337,9 @@
       <button class="keep-btn" id="keep-btn" style="display: none;">
         Keep Same Weight
       </button>
+      <button class="fail-btn" id="fail-btn">
+        Log Failure
+      </button>
     </div>
 
     <div class="card">
@@ -326,6 +353,7 @@
   <script>
     const DEFAULT_SETTINGS = {
       plates: [10, 5, 2.5, 2.5, 1.25],
+      restTimer: 180,
       exercises: {
         squat: { startingWeight: 20, progression: 5 },
         press: { startingWeight: 10, progression: 2.5 },
@@ -339,6 +367,8 @@
     let completedWarmups = [false, false, false, false, false];
     let data = null;
     let history = [];
+    let timerInterval = null;
+    let timerSeconds = 0;
 
     async function loadHistory() {
       try {
@@ -364,12 +394,14 @@
       }
     }
 
-    async function logWorkout(exercise, weight) {
-      history.unshift({
+    async function logWorkout(exercise, weight, failed = false) {
+      const entry = {
         exercise,
         weight,
         date: new Date().toISOString()
-      });
+      };
+      if (failed) entry.failed = true;
+      history.unshift(entry);
       // Keep last 50 entries
       if (history.length > 50) {
         history = history.slice(0, 50);
@@ -418,7 +450,8 @@
       history.forEach(entry => {
         byExercise[entry.exercise].push({
           date: new Date(entry.date),
-          weight: entry.weight
+          weight: entry.weight,
+          failed: !!entry.failed
         });
       });
 
@@ -519,13 +552,26 @@
         });
         ctx.stroke();
 
-        // Draw points
+        // Draw points (circles for success, X for failure)
         points.forEach(point => {
           const x = toX(point.date);
           const y = toY(point.weight);
-          ctx.beginPath();
-          ctx.arc(x, y, 4, 0, Math.PI * 2);
-          ctx.fill();
+          if (point.failed) {
+            // Draw X marker
+            const s = 5;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(x - s, y - s);
+            ctx.lineTo(x + s, y + s);
+            ctx.moveTo(x + s, y - s);
+            ctx.lineTo(x - s, y + s);
+            ctx.stroke();
+          } else {
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
         });
       });
 
@@ -634,6 +680,43 @@
       return warmup;
     }
 
+    function formatTimer(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function startRestTimer() {
+      stopRestTimer();
+      timerSeconds = settings.restTimer || 180;
+      const el = document.getElementById('working-weight');
+      el.textContent = formatTimer(timerSeconds);
+      el.classList.add('timer-value');
+      el.classList.remove('weight-value');
+      timerInterval = setInterval(() => {
+        timerSeconds--;
+        if (timerSeconds <= 0) {
+          stopRestTimer();
+          return;
+        }
+        el.textContent = formatTimer(timerSeconds);
+      }, 1000);
+    }
+
+    function stopRestTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      timerSeconds = 0;
+      const el = document.getElementById('working-weight');
+      el.classList.remove('timer-value');
+      el.classList.add('weight-value');
+      if (data) {
+        el.textContent = `${data[currentExercise].weight}kg`;
+      }
+    }
+
     function render() {
       const weight = data[currentExercise].weight;
 
@@ -642,8 +725,10 @@
         tab.classList.toggle('active', tab.dataset.exercise === currentExercise);
       });
 
-      // Update working weight display
-      document.getElementById('working-weight').textContent = `${weight}kg`;
+      // Update working weight display (only if timer is not running)
+      if (!timerInterval) {
+        document.getElementById('working-weight').textContent = `${weight}kg`;
+      }
       document.getElementById('working-weight-sets').textContent = `${weight}kg`;
 
       // Update working plates info
@@ -734,6 +819,7 @@
     // Event listeners
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
+        stopRestTimer();
         currentExercise = tab.dataset.exercise;
         completedSets = [false, false, false];
         completedWarmups = [false, false, false, false, false];
@@ -742,6 +828,7 @@
     });
 
     document.getElementById('increase-btn').addEventListener('click', async () => {
+      stopRestTimer();
       const increment = getEffectiveProgression(currentExercise);
       const newWeight = data[currentExercise].weight + increment;
       if (calculatePlates(newWeight) !== null) {
@@ -754,6 +841,7 @@
     });
 
     document.getElementById('decrease-btn').addEventListener('click', async () => {
+      stopRestTimer();
       const increment = getEffectiveProgression(currentExercise);
       const newWeight = data[currentExercise].weight - increment;
       const smallestPlate = Math.min(...settings.plates);
@@ -779,11 +867,22 @@
       if (e.target.classList.contains('set-checkbox')) {
         const setIndex = parseInt(e.target.dataset.set);
         completedSets[setIndex] = e.target.checked;
+        // Start rest timer when checking a set (not unchecking)
+        if (e.target.checked) {
+          const requiredSets = currentExercise === 'deadlift' ? 1 : 3;
+          const allComplete = completedSets.slice(0, requiredSets).every(s => s);
+          if (!allComplete) {
+            startRestTimer();
+          } else {
+            stopRestTimer();
+          }
+        }
         render();
       }
     });
 
     document.getElementById('progress-btn').addEventListener('click', async () => {
+      stopRestTimer();
       const currentWeight = data[currentExercise].weight;
       await logWorkout(currentExercise, currentWeight);
 
@@ -799,7 +898,16 @@
     });
 
     document.getElementById('keep-btn').addEventListener('click', async () => {
+      stopRestTimer();
       await logWorkout(currentExercise, data[currentExercise].weight);
+      completedSets = [false, false, false];
+      completedWarmups = [false, false, false, false, false];
+      render();
+    });
+
+    document.getElementById('fail-btn').addEventListener('click', async () => {
+      stopRestTimer();
+      await logWorkout(currentExercise, data[currentExercise].weight, true);
       completedSets = [false, false, false];
       completedWarmups = [false, false, false, false, false];
       render();
