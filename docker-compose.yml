@@ -1,5 +1,6 @@
 services:
   barbell:
+    image: ghcr.io/pandalanax/barbell-training:latest
     build: .
     ports:
       - "3000:3000"
