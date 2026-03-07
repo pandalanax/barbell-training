@@ -3,6 +3,13 @@ name: Build and Push Docker Image
 on:
   push:
     branches: [main]
+    paths:
+      - 'server.js'
+      - 'index.html'
+      - 'settings.html'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.github/workflows/docker.yml'
 
 env:
   REGISTRY: ghcr.io
