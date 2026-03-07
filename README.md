@@ -20,8 +20,10 @@ Features:
 * Log failed workouts
 * History graph with success/failure markers
 * State preserved when switching between exercises
+* 8 color themes (Dark Blue, Black & White, Everforest, Pastel, Dracula, Nord, Solarized, Gruvbox)
   
 Settings:
+* Theme selection
 * Specify plates you own
 * Starting weights per exercise
 * Progression weight to add each time after a completed workout

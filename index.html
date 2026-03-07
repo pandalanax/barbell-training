@@ -4,7 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Barbell Training</title>
+  <script src="themes.js"></script>
   <style>
+    :root {
+      --bg: #1a1a2e;
+      --card-bg: #16213e;
+      --card-bg-active: #0f3460;
+      --text-primary: #eee;
+      --text-secondary: #888;
+      --accent: #e94560;
+      --accent-hover: #ff6b6b;
+      --border: #0f3460;
+      --chart-squat: #e94560;
+      --chart-press: #4ecdc4;
+      --chart-deadlift: #ffe66d;
+    }
     * {
       box-sizing: border-box;
       margin: 0;
@@ -13,8 +27,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #1a1a2e;
-      color: #eee;
+      background: var(--bg);
+      color: var(--text-primary);
       min-height: 100vh;
       padding: 20px;
     }
@@ -38,14 +52,14 @@
     .settings-btn {
       background: none;
       border: none;
-      color: #888;
+      color: var(--text-secondary);
       font-size: 1.5rem;
       cursor: pointer;
       padding: 4px;
     }
 
     .settings-btn:hover {
-      color: #eee;
+      color: var(--text-primary);
     }
 
     .tabs {
@@ -58,8 +72,8 @@
       flex: 1;
       padding: 12px;
       border: none;
-      background: #16213e;
-      color: #888;
+      background: var(--card-bg);
+      color: var(--text-secondary);
       font-size: 1rem;
       cursor: pointer;
       border-radius: 8px;
@@ -67,12 +81,12 @@
     }
 
     .tab.active {
-      background: #0f3460;
-      color: #fff;
+      background: var(--card-bg-active);
+      color: var(--text-primary);
     }
 
     .card {
-      background: #16213e;
+      background: var(--card-bg);
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 16px;
@@ -92,7 +106,7 @@
     .timer-value {
       font-size: 2rem;
       font-weight: bold;
-      color: #e94560;
+      color: var(--accent);
       font-variant-numeric: tabular-nums;
     }
 
@@ -105,8 +119,8 @@
       width: 44px;
       height: 44px;
       border: none;
-      background: #0f3460;
-      color: #fff;
+      background: var(--card-bg-active);
+      color: var(--text-primary);
       font-size: 1.5rem;
       cursor: pointer;
       border-radius: 8px;
@@ -119,7 +133,7 @@
 
     .section-title {
       font-size: 0.85rem;
-      color: #888;
+      color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 12px;
@@ -134,7 +148,7 @@
       align-items: center;
       gap: 12px;
       padding: 10px 0;
-      border-bottom: 1px solid #0f3460;
+      border-bottom: 1px solid var(--border);
     }
 
     .warmup-item:last-child {
@@ -145,7 +159,7 @@
       width: 24px;
       height: 24px;
       cursor: pointer;
-      accent-color: #e94560;
+      accent-color: var(--accent);
       flex-shrink: 0;
     }
 
@@ -159,7 +173,7 @@
     .warmup-complete .warmup-plates,
     .warmup-complete .warmup-reps {
       text-decoration: line-through;
-      color: #888;
+      color: var(--text-secondary);
     }
 
     .warmup-weight {
@@ -167,12 +181,12 @@
     }
 
     .warmup-plates {
-      color: #888;
+      color: var(--text-secondary);
       font-size: 0.9rem;
     }
 
     .warmup-reps {
-      color: #e94560;
+      color: var(--accent);
     }
 
     .working-set {
@@ -180,7 +194,7 @@
       align-items: center;
       gap: 12px;
       padding: 12px 0;
-      border-bottom: 1px solid #0f3460;
+      border-bottom: 1px solid var(--border);
     }
 
     .working-set:last-child {
@@ -191,7 +205,7 @@
       width: 24px;
       height: 24px;
       cursor: pointer;
-      accent-color: #e94560;
+      accent-color: var(--accent);
     }
 
     .set-label {
@@ -200,15 +214,15 @@
 
     .set-complete {
       text-decoration: line-through;
-      color: #888;
+      color: var(--text-secondary);
     }
 
     .progress-btn {
       width: 100%;
       padding: 16px;
       border: none;
-      background: #e94560;
-      color: #fff;
+      background: var(--accent);
+      color: var(--text-primary);
       font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
@@ -217,15 +231,15 @@
     }
 
     .progress-btn:hover {
-      background: #ff6b6b;
+      background: var(--accent-hover);
     }
 
     .keep-btn {
       width: 100%;
       padding: 12px;
-      border: 1px solid #888;
+      border: 1px solid var(--text-secondary);
       background: transparent;
-      color: #888;
+      color: var(--text-secondary);
       font-size: 0.95rem;
       cursor: pointer;
       border-radius: 8px;
@@ -233,16 +247,16 @@
     }
 
     .keep-btn:hover {
-      border-color: #eee;
-      color: #eee;
+      border-color: var(--text-primary);
+      color: var(--text-primary);
     }
 
     .fail-btn {
       width: 100%;
       padding: 12px;
-      border: 1px solid #e94560;
+      border: 1px solid var(--accent);
       background: transparent;
-      color: #e94560;
+      color: var(--accent);
       font-size: 0.95rem;
       cursor: pointer;
       border-radius: 8px;
@@ -250,8 +264,8 @@
     }
 
     .fail-btn:hover {
-      background: #e94560;
-      color: #fff;
+      background: var(--accent);
+      color: var(--text-primary);
     }
 
     .chart-legend {
@@ -279,7 +293,7 @@
     }
 
     .history-empty {
-      color: #888;
+      color: var(--text-secondary);
       font-style: italic;
       text-align: center;
       padding: 40px 0;
@@ -288,13 +302,13 @@
     .plates-info {
       margin-top: 12px;
       padding-top: 12px;
-      border-top: 1px solid #0f3460;
+      border-top: 1px solid var(--border);
       font-size: 0.9rem;
-      color: #888;
+      color: var(--text-secondary);
     }
 
     .plates-info strong {
-      color: #eee;
+      color: var(--text-primary);
     }
   </style>
 </head>
@@ -412,11 +426,14 @@
       await saveHistory();
     }
 
-    const EXERCISE_COLORS = {
-      squat: '#e94560',
-      press: '#4ecdc4',
-      deadlift: '#ffe66d'
-    };
+    function getExerciseColors() {
+      const style = getComputedStyle(document.documentElement);
+      return {
+        squat: style.getPropertyValue('--chart-squat').trim(),
+        press: style.getPropertyValue('--chart-press').trim(),
+        deadlift: style.getPropertyValue('--chart-deadlift').trim()
+      };
+    }
 
     function drawChart() {
       const canvas = document.getElementById('history-chart');
@@ -473,8 +490,13 @@
       const chartWidth = width - padding.left - padding.right;
       const chartHeight = height - padding.top - padding.bottom;
 
+      // Get theme colors for chart
+      const style = getComputedStyle(document.documentElement);
+      const borderColor = style.getPropertyValue('--border').trim();
+      const textSecondary = style.getPropertyValue('--text-secondary').trim();
+
       // Draw axes
-      ctx.strokeStyle = '#0f3460';
+      ctx.strokeStyle = borderColor;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(padding.left, padding.top);
@@ -483,7 +505,7 @@
       ctx.stroke();
 
       // Draw Y axis labels
-      ctx.fillStyle = '#888';
+      ctx.fillStyle = textSecondary;
       ctx.font = '11px -apple-system, sans-serif';
       ctx.textAlign = 'right';
       const ySteps = 4;
@@ -493,7 +515,7 @@
         ctx.fillText(Math.round(weight) + 'kg', padding.left - 5, y + 4);
 
         // Grid line
-        ctx.strokeStyle = '#0f3460';
+        ctx.strokeStyle = borderColor;
         ctx.beginPath();
         ctx.moveTo(padding.left, y);
         ctx.lineTo(width - padding.right, y);
@@ -513,7 +535,7 @@
       };
 
       // Draw X axis date labels
-      ctx.fillStyle = '#888';
+      ctx.fillStyle = textSecondary;
       ctx.font = '10px -apple-system, sans-serif';
       ctx.textAlign = 'center';
 
@@ -536,6 +558,7 @@
       }
 
       // Draw lines and points for each exercise
+      const EXERCISE_COLORS = getExerciseColors();
       Object.keys(byExercise).forEach(exercise => {
         const points = byExercise[exercise];
         if (points.length === 0) return;
@@ -918,6 +941,9 @@
     // Reload data when returning from settings page
     async function reloadAndRender() {
       settings = await loadSettings();
+      if (settings.theme) {
+        applyTheme(settings.theme);
+      }
       data = await loadProgress();
       await loadHistory();
       render();
@@ -933,6 +959,9 @@
     // Initial load and render
     (async () => {
       settings = await loadSettings();
+      if (settings.theme) {
+        applyTheme(settings.theme);
+      }
       data = await loadProgress();
       await loadHistory();
       render();

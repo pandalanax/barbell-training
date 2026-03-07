@@ -3,3 +3,9 @@ history.json
 progress.json
 settings.json
 data/
+
+# OS files
+.DS_Store
+
+# Claude Code settings
+.claude/

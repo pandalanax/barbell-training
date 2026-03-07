@@ -4,7 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Settings - Barbell Training</title>
+  <script src="themes.js"></script>
   <style>
+    :root {
+      --bg: #1a1a2e;
+      --card-bg: #16213e;
+      --card-bg-active: #0f3460;
+      --text-primary: #eee;
+      --text-secondary: #888;
+      --accent: #e94560;
+      --accent-hover: #ff6b6b;
+      --border: #0f3460;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -13,8 +25,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #1a1a2e;
-      color: #eee;
+      background: var(--bg);
+      color: var(--text-primary);
       min-height: 100vh;
       padding: 20px;
     }
@@ -34,7 +46,7 @@
     .back-btn {
       background: none;
       border: none;
-      color: #e94560;
+      color: var(--accent);
       font-size: 1.5rem;
       cursor: pointer;
       padding: 4px;
@@ -45,7 +57,7 @@
     }
 
     .card {
-      background: #16213e;
+      background: var(--card-bg);
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 16px;
@@ -53,7 +65,7 @@
 
     .section-title {
       font-size: 0.85rem;
-      color: #888;
+      color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 12px;
@@ -70,22 +82,22 @@
     label {
       display: block;
       margin-bottom: 6px;
-      color: #ccc;
+      color: var(--text-primary);
     }
 
     input[type="number"] {
       width: 100%;
       padding: 12px;
-      border: 1px solid #0f3460;
-      background: #1a1a2e;
-      color: #eee;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-primary);
       font-size: 1rem;
       border-radius: 8px;
     }
 
     input[type="number"]:focus {
       outline: none;
-      border-color: #e94560;
+      border-color: var(--accent);
     }
 
     .plates-list {
@@ -99,7 +111,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #0f3460;
+      background: var(--card-bg-active);
       padding: 8px 12px;
       border-radius: 20px;
       font-size: 0.9rem;
@@ -108,7 +120,7 @@
     .plate-remove {
       background: none;
       border: none;
-      color: #e94560;
+      color: var(--accent);
       cursor: pointer;
       font-size: 1.1rem;
       line-height: 1;
@@ -126,8 +138,8 @@
     .add-btn {
       padding: 12px 20px;
       border: none;
-      background: #0f3460;
-      color: #fff;
+      background: var(--card-bg-active);
+      color: var(--text-primary);
       font-size: 1rem;
       cursor: pointer;
       border-radius: 8px;
@@ -139,7 +151,7 @@
       gap: 12px;
       align-items: end;
       padding: 12px 0;
-      border-bottom: 1px solid #0f3460;
+      border-bottom: 1px solid var(--border);
     }
 
     .exercise-row:last-child {
@@ -161,15 +173,15 @@
       gap: 12px;
       margin-bottom: 8px;
       font-size: 0.8rem;
-      color: #888;
+      color: var(--text-secondary);
     }
 
     .save-btn {
       width: 100%;
       padding: 16px;
       border: none;
-      background: #e94560;
-      color: #fff;
+      background: var(--accent);
+      color: var(--text-primary);
       font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
@@ -177,15 +189,15 @@
     }
 
     .save-btn:hover {
-      background: #ff6b6b;
+      background: var(--accent-hover);
     }
 
     .reset-btn {
       width: 100%;
       padding: 12px;
-      border: 1px solid #e94560;
+      border: 1px solid var(--accent);
       background: transparent;
-      color: #e94560;
+      color: var(--accent);
       font-size: 1rem;
       cursor: pointer;
       border-radius: 8px;
@@ -197,8 +209,8 @@
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: #0f3460;
-      color: #fff;
+      background: var(--card-bg-active);
+      color: var(--text-primary);
       padding: 12px 24px;
       border-radius: 8px;
       opacity: 0;
@@ -208,6 +220,63 @@
     .toast.show {
       opacity: 1;
     }
+
+    /* Theme selector styles */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .theme-option {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .theme-option.active {
+      border-color: var(--accent);
+    }
+
+    .theme-option:hover {
+      border-color: var(--text-secondary);
+    }
+
+    .theme-option.active:hover {
+      border-color: var(--accent);
+    }
+
+    .theme-preview {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .theme-preview-bar {
+      height: 8px;
+      border-radius: 4px;
+    }
+
+    .theme-preview-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .theme-preview-box {
+      height: 16px;
+      flex: 1;
+      border-radius: 4px;
+    }
+
+    .theme-label {
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -216,6 +285,11 @@
       <button class="back-btn" onclick="location.href='index.html'">&larr;</button>
       <h1>Settings</h1>
     </header>
+
+    <div class="card">
+      <div class="section-title">Theme</div>
+      <div class="theme-grid" id="theme-grid"></div>
+    </div>
 
     <div class="card">
       <div class="section-title">Available Plates (per side)</div>
@@ -269,6 +343,7 @@
     const DEFAULT_SETTINGS = {
       plates: [10, 5, 2.5, 2.5, 1.25],
       restTimer: 180,
+      theme: 'dark-blue',
       exercises: {
         squat: { startingWeight: 20, progression: 5 },
         press: { startingWeight: 10, progression: 2.5 },
@@ -279,6 +354,7 @@
     let settings = DEFAULT_SETTINGS;
     let progress = null;
     let plates = [];
+    let currentTheme = 'dark-blue';
 
     async function loadSettings() {
       try {
@@ -329,6 +405,28 @@
         `).join('');
     }
 
+    function renderThemes() {
+      const grid = document.getElementById('theme-grid');
+      grid.innerHTML = Object.entries(THEMES).map(([id, theme]) => {
+        const c = theme.colors;
+        const isActive = currentTheme === id;
+        return `
+          <div class="theme-option ${isActive ? 'active' : ''}" data-theme="${id}">
+            <div class="theme-preview" style="background: ${c['--bg']}">
+              <div class="theme-preview-row">
+                <div class="theme-preview-box" style="background: ${c['--card-bg-active']}"></div>
+                <div class="theme-preview-box" style="background: ${c['--card-bg']}"></div>
+                <div class="theme-preview-box" style="background: ${c['--card-bg']}"></div>
+              </div>
+              <div class="theme-preview-bar" style="background: ${c['--card-bg']}"></div>
+              <div class="theme-preview-bar" style="background: ${c['--accent']}; width: 60%"></div>
+            </div>
+            <div class="theme-label" style="background: ${c['--card-bg']}; color: ${c['--text-primary']}">${theme.name}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
     function populateForm() {
       // Show current progress weights as starting weights if available
       const sqWeight = progress ? progress.squat.weight : settings.exercises.squat.startingWeight;
@@ -342,10 +440,21 @@
       document.getElementById('deadlift-progress').value = settings.exercises.deadlift.progression;
       document.getElementById('rest-timer').value = settings.restTimer || 180;
       plates = [...settings.plates];
+      currentTheme = settings.theme || 'dark-blue';
       renderPlates();
+      renderThemes();
     }
 
     // Event listeners
+    document.getElementById('theme-grid').addEventListener('click', (e) => {
+      const themeOption = e.target.closest('.theme-option');
+      if (themeOption) {
+        currentTheme = themeOption.dataset.theme;
+        applyTheme(currentTheme);
+        renderThemes();
+      }
+    });
+
     document.getElementById('plates-list').addEventListener('click', (e) => {
       if (e.target.classList.contains('plate-remove')) {
         const index = parseInt(e.target.dataset.index);
@@ -375,6 +484,7 @@
       settings = {
         plates: [...plates],
         restTimer: parseInt(document.getElementById('rest-timer').value) || 180,
+        theme: currentTheme,
         exercises: {
           squat: {
             startingWeight: parseFloat(document.getElementById('squat-start').value) || DEFAULT_SETTINGS.exercises.squat.startingWeight,
