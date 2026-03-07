@@ -3,8 +3,8 @@ Simple app to aid with barbell training. Shows warmup sets with plate breakdowns
 Data is stored in json files.
 
 <p align="center">
-<img width="495" height="1107" alt="image" src="https://github.com/user-attachments/assets/e18c65a7-ac8b-41a2-b986-2b2ed2d0f455" />
-<img width="495" height="1107" alt="image" src="https://github.com/user-attachments/assets/e15d7f97-e819-412a-86fb-46ed92eeee0d" />
+<img width="430" alt="Main training view" src="assets/screenshot-main.png" />
+<img width="430" alt="Settings view" src="assets/screenshot-settings.png" />
 </p>
 
 Supported Exercises:
