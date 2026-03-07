@@ -16,9 +16,13 @@ Features:
 * Warmup calculator (empty bar, 40%, 60%, 80%)
 * Shows which plates to load per side
 * Auto progression after completing working sets
-* History Graph
+* Rest timer between sets (persists when switching exercises)
+* Log failed workouts
+* History graph with success/failure markers
+* State preserved when switching between exercises
   
 Settings:
 * Specify plates you own
 * Starting weights per exercise
 * Progression weight to add each time after a completed workout
+* Rest timer duration
