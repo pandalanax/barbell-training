@@ -363,8 +363,11 @@
 
     let settings = null;
     let currentExercise = 'squat';
-    let completedSets = [false, false, false];
-    let completedWarmups = [false, false, false, false, false];
+    let exerciseState = {
+      squat: { completedSets: [false, false, false], completedWarmups: [false, false, false, false, false] },
+      press: { completedSets: [false, false, false], completedWarmups: [false, false, false, false, false] },
+      deadlift: { completedSets: [false, false, false], completedWarmups: [false, false, false, false, false] }
+    };
     let data = null;
     let history = [];
     let timerInterval = null;
@@ -750,6 +753,7 @@
       // Render warmup
       const warmupList = document.getElementById('warmup-list');
       const warmup = generateWarmup(weight);
+      const completedWarmups = exerciseState[currentExercise].completedWarmups;
       warmupList.innerHTML = warmup.map((set, i) => {
         const checked = completedWarmups[i] ? 'checked' : '';
         const completeClass = completedWarmups[i] ? 'warmup-complete' : '';
@@ -783,6 +787,7 @@
       const workingSets = document.getElementById('working-sets');
       const numSets = currentExercise === 'deadlift' ? 1 : 3;
       const setNums = Array.from({ length: numSets }, (_, i) => i + 1);
+      const completedSets = exerciseState[currentExercise].completedSets;
       workingSets.innerHTML = setNums.map((num, i) => `
         <div class="working-set">
           <input type="checkbox" class="set-checkbox" data-set="${i}"
@@ -795,7 +800,7 @@
 
       // Progress buttons
       const requiredSets = currentExercise === 'deadlift' ? 1 : 3;
-      const allComplete = completedSets.slice(0, requiredSets).every(s => s);
+      const allComplete = exerciseState[currentExercise].completedSets.slice(0, requiredSets).every(s => s);
       const progressBtn = document.getElementById('progress-btn');
       const keepBtn = document.getElementById('keep-btn');
       const nextWeightValue = weight + getEffectiveProgression(currentExercise);
@@ -819,10 +824,7 @@
     // Event listeners
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        stopRestTimer();
         currentExercise = tab.dataset.exercise;
-        completedSets = [false, false, false];
-        completedWarmups = [false, false, false, false, false];
         render();
       });
     });
@@ -833,8 +835,8 @@
       const newWeight = data[currentExercise].weight + increment;
       if (calculatePlates(newWeight) !== null) {
         data[currentExercise].weight = newWeight;
-        completedSets = [false, false, false];
-        completedWarmups = [false, false, false, false, false];
+        exerciseState[currentExercise].completedSets = [false, false, false];
+        exerciseState[currentExercise].completedWarmups = [false, false, false, false, false];
         await saveProgress();
         render();
       }
@@ -848,8 +850,8 @@
       const minWeight = smallestPlate * 2;
       if (newWeight >= minWeight) {
         data[currentExercise].weight = newWeight;
-        completedSets = [false, false, false];
-        completedWarmups = [false, false, false, false, false];
+        exerciseState[currentExercise].completedSets = [false, false, false];
+        exerciseState[currentExercise].completedWarmups = [false, false, false, false, false];
         await saveProgress();
         render();
       }
@@ -858,7 +860,7 @@
     document.getElementById('warmup-list').addEventListener('change', (e) => {
       if (e.target.classList.contains('warmup-checkbox')) {
         const warmupIndex = parseInt(e.target.dataset.warmup);
-        completedWarmups[warmupIndex] = e.target.checked;
+        exerciseState[currentExercise].completedWarmups[warmupIndex] = e.target.checked;
         render();
       }
     });
@@ -866,11 +868,11 @@
     document.getElementById('working-sets').addEventListener('change', (e) => {
       if (e.target.classList.contains('set-checkbox')) {
         const setIndex = parseInt(e.target.dataset.set);
-        completedSets[setIndex] = e.target.checked;
+        exerciseState[currentExercise].completedSets[setIndex] = e.target.checked;
         // Start rest timer when checking a set (not unchecking)
         if (e.target.checked) {
           const requiredSets = currentExercise === 'deadlift' ? 1 : 3;
-          const allComplete = completedSets.slice(0, requiredSets).every(s => s);
+          const allComplete = exerciseState[currentExercise].completedSets.slice(0, requiredSets).every(s => s);
           if (!allComplete) {
             startRestTimer();
           } else {
@@ -890,8 +892,8 @@
       const newWeight = currentWeight + increment;
       if (calculatePlates(newWeight) !== null) {
         data[currentExercise].weight = newWeight;
-        completedSets = [false, false, false];
-        completedWarmups = [false, false, false, false, false];
+        exerciseState[currentExercise].completedSets = [false, false, false];
+        exerciseState[currentExercise].completedWarmups = [false, false, false, false, false];
         await saveProgress();
         render();
       }
@@ -900,16 +902,16 @@
     document.getElementById('keep-btn').addEventListener('click', async () => {
       stopRestTimer();
       await logWorkout(currentExercise, data[currentExercise].weight);
-      completedSets = [false, false, false];
-      completedWarmups = [false, false, false, false, false];
+      exerciseState[currentExercise].completedSets = [false, false, false];
+      exerciseState[currentExercise].completedWarmups = [false, false, false, false, false];
       render();
     });
 
     document.getElementById('fail-btn').addEventListener('click', async () => {
       stopRestTimer();
       await logWorkout(currentExercise, data[currentExercise].weight, true);
-      completedSets = [false, false, false];
-      completedWarmups = [false, false, false, false, false];
+      exerciseState[currentExercise].completedSets = [false, false, false];
+      exerciseState[currentExercise].completedWarmups = [false, false, false, false, false];
       render();
     });
 
