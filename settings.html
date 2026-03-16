@@ -330,6 +330,11 @@
         <input type="number" id="deadlift-start" step="2.5" min="0">
         <input type="number" id="deadlift-progress" step="0.5" min="0.5">
       </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Row</span>
+        <input type="number" id="row-start" step="2.5" min="0">
+        <input type="number" id="row-progress" step="0.5" min="0.5">
+      </div>
     </div>
 
     <button class="save-btn" id="save-btn">Save Settings</button>
@@ -347,7 +352,8 @@
       exercises: {
         squat: { startingWeight: 20, progression: 5 },
         press: { startingWeight: 10, progression: 2.5 },
-        deadlift: { startingWeight: 30, progression: 5 }
+        deadlift: { startingWeight: 30, progression: 5 },
+        row: { startingWeight: 30, progression: 5 }
       }
     };
 
@@ -432,12 +438,15 @@
       const sqWeight = progress ? progress.squat.weight : settings.exercises.squat.startingWeight;
       const prWeight = progress ? progress.press.weight : settings.exercises.press.startingWeight;
       const dlWeight = progress ? progress.deadlift.weight : settings.exercises.deadlift.startingWeight;
+      const rowWeight = progress && progress.row ? progress.row.weight : settings.exercises.row.startingWeight;
       document.getElementById('squat-start').value = sqWeight;
       document.getElementById('squat-progress').value = settings.exercises.squat.progression;
       document.getElementById('press-start').value = prWeight;
       document.getElementById('press-progress').value = settings.exercises.press.progression;
       document.getElementById('deadlift-start').value = dlWeight;
       document.getElementById('deadlift-progress').value = settings.exercises.deadlift.progression;
+      document.getElementById('row-start').value = rowWeight;
+      document.getElementById('row-progress').value = settings.exercises.row.progression;
       document.getElementById('rest-timer').value = settings.restTimer || 180;
       plates = [...settings.plates];
       currentTheme = settings.theme || 'dark-blue';
@@ -497,6 +506,10 @@
           deadlift: {
             startingWeight: parseFloat(document.getElementById('deadlift-start').value) || DEFAULT_SETTINGS.exercises.deadlift.startingWeight,
             progression: parseFloat(document.getElementById('deadlift-progress').value) || DEFAULT_SETTINGS.exercises.deadlift.progression
+          },
+          row: {
+            startingWeight: parseFloat(document.getElementById('row-start').value) || DEFAULT_SETTINGS.exercises.row.startingWeight,
+            progression: parseFloat(document.getElementById('row-progress').value) || DEFAULT_SETTINGS.exercises.row.progression
           }
         }
       };
@@ -511,7 +524,8 @@
         const progress = {
           squat: { weight: parseFloat(document.getElementById('squat-start').value) || DEFAULT_SETTINGS.exercises.squat.startingWeight },
           press: { weight: parseFloat(document.getElementById('press-start').value) || DEFAULT_SETTINGS.exercises.press.startingWeight },
-          deadlift: { weight: parseFloat(document.getElementById('deadlift-start').value) || DEFAULT_SETTINGS.exercises.deadlift.startingWeight }
+          deadlift: { weight: parseFloat(document.getElementById('deadlift-start').value) || DEFAULT_SETTINGS.exercises.deadlift.startingWeight },
+          row: { weight: parseFloat(document.getElementById('row-start').value) || DEFAULT_SETTINGS.exercises.row.startingWeight }
         };
         await fetch('/api/progress', {
           method: 'POST',

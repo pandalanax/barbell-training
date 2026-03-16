@@ -18,6 +18,7 @@
       --chart-squat: #e94560;
       --chart-press: #4ecdc4;
       --chart-deadlift: #ffe66d;
+      --chart-row: #a78bfa;
     }
     * {
       box-sizing: border-box;
@@ -323,6 +324,7 @@
       <button class="tab active" data-exercise="squat">Squat</button>
       <button class="tab" data-exercise="press">Press</button>
       <button class="tab" data-exercise="deadlift">Deadlift</button>
+      <button class="tab" data-exercise="row">Row</button>
     </div>
 
     <div class="card">
@@ -371,7 +373,8 @@
       exercises: {
         squat: { startingWeight: 20, progression: 5 },
         press: { startingWeight: 10, progression: 2.5 },
-        deadlift: { startingWeight: 30, progression: 5 }
+        deadlift: { startingWeight: 30, progression: 5 },
+        row: { startingWeight: 30, progression: 5 }
       }
     };
 
@@ -380,7 +383,8 @@
     let exerciseState = {
       squat: { completedSets: [false, false, false], completedWarmups: [false, false, false, false, false] },
       press: { completedSets: [false, false, false], completedWarmups: [false, false, false, false, false] },
-      deadlift: { completedSets: [false, false, false], completedWarmups: [false, false, false, false, false] }
+      deadlift: { completedSets: [false, false, false], completedWarmups: [false, false, false, false, false] },
+      row: { completedSets: [false, false, false], completedWarmups: [false, false, false, false, false] }
     };
     let data = null;
     let history = [];
@@ -431,7 +435,8 @@
       return {
         squat: style.getPropertyValue('--chart-squat').trim(),
         press: style.getPropertyValue('--chart-press').trim(),
-        deadlift: style.getPropertyValue('--chart-deadlift').trim()
+        deadlift: style.getPropertyValue('--chart-deadlift').trim(),
+        row: style.getPropertyValue('--chart-row').trim()
       };
     }
 
@@ -466,7 +471,7 @@
       emptyMsg.style.display = 'none';
 
       // Group history by exercise
-      const byExercise = { squat: [], press: [], deadlift: [] };
+      const byExercise = { squat: [], press: [], deadlift: [], row: [] };
       history.forEach(entry => {
         byExercise[entry.exercise].push({
           date: new Date(entry.date),
@@ -627,7 +632,8 @@
         return {
           squat: { weight: settings.exercises.squat.startingWeight },
           press: { weight: settings.exercises.press.startingWeight },
-          deadlift: { weight: settings.exercises.deadlift.startingWeight }
+          deadlift: { weight: settings.exercises.deadlift.startingWeight },
+          row: { weight: settings.exercises.row.startingWeight }
         };
       }
     }
@@ -808,7 +814,7 @@
 
       // Render working sets
       const workingSets = document.getElementById('working-sets');
-      const numSets = currentExercise === 'deadlift' ? 1 : 3;
+      const numSets = (currentExercise === 'deadlift' || currentExercise === 'row') ? 1 : 3;
       const setNums = Array.from({ length: numSets }, (_, i) => i + 1);
       const completedSets = exerciseState[currentExercise].completedSets;
       workingSets.innerHTML = setNums.map((num, i) => `
@@ -822,7 +828,7 @@
       `).join('');
 
       // Progress buttons
-      const requiredSets = currentExercise === 'deadlift' ? 1 : 3;
+      const requiredSets = (currentExercise === 'deadlift' || currentExercise === 'row') ? 1 : 3;
       const allComplete = exerciseState[currentExercise].completedSets.slice(0, requiredSets).every(s => s);
       const progressBtn = document.getElementById('progress-btn');
       const keepBtn = document.getElementById('keep-btn');
@@ -894,7 +900,7 @@
         exerciseState[currentExercise].completedSets[setIndex] = e.target.checked;
         // Start rest timer when checking a set (not unchecking)
         if (e.target.checked) {
-          const requiredSets = currentExercise === 'deadlift' ? 1 : 3;
+            const requiredSets = (currentExercise === 'deadlift' || currentExercise === 'row') ? 1 : 3;
           const allComplete = exerciseState[currentExercise].completedSets.slice(0, requiredSets).every(s => s);
           if (!allComplete) {
             startRestTimer();

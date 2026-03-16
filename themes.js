@@ -13,7 +13,8 @@ const THEMES = {
       '--border': '#0f3460',
       '--chart-squat': '#e94560',
       '--chart-press': '#4ecdc4',
-      '--chart-deadlift': '#ffe66d'
+      '--chart-deadlift': '#ffe66d',
+      '--chart-row': '#a78bfa'
     }
   },
   'black-white': {
@@ -29,7 +30,8 @@ const THEMES = {
       '--border': '#333333',
       '--chart-squat': '#ffffff',
       '--chart-press': '#aaaaaa',
-      '--chart-deadlift': '#666666'
+      '--chart-deadlift': '#666666',
+      '--chart-row': '#444444'
     }
   },
   'everforest': {
@@ -45,7 +47,8 @@ const THEMES = {
       '--border': '#475258',
       '--chart-squat': '#a7c080',
       '--chart-press': '#7fbbb3',
-      '--chart-deadlift': '#dbbc7f'
+      '--chart-deadlift': '#dbbc7f',
+      '--chart-row': '#d699b6'
     }
   },
   'pastel': {
@@ -61,7 +64,8 @@ const THEMES = {
       '--border': '#e8c4b8',
       '--chart-squat': '#f582ae',
       '--chart-press': '#8bd3dd',
-      '--chart-deadlift': '#ffc6c7'
+      '--chart-deadlift': '#ffc6c7',
+      '--chart-row': '#b8a9c9'
     }
   },
   'dracula': {
@@ -77,7 +81,8 @@ const THEMES = {
       '--border': '#6272a4',
       '--chart-squat': '#ff79c6',
       '--chart-press': '#8be9fd',
-      '--chart-deadlift': '#f1fa8c'
+      '--chart-deadlift': '#f1fa8c',
+      '--chart-row': '#bd93f9'
     }
   },
   'nord': {
@@ -93,7 +98,8 @@ const THEMES = {
       '--border': '#4c566a',
       '--chart-squat': '#88c0d0',
       '--chart-press': '#a3be8c',
-      '--chart-deadlift': '#ebcb8b'
+      '--chart-deadlift': '#ebcb8b',
+      '--chart-row': '#b48ead'
     }
   },
   'solarized': {
@@ -109,7 +115,8 @@ const THEMES = {
       '--border': '#094959',
       '--chart-squat': '#b58900',
       '--chart-press': '#268bd2',
-      '--chart-deadlift': '#859900'
+      '--chart-deadlift': '#859900',
+      '--chart-row': '#6c71c4'
     }
   },
   'gruvbox': {
@@ -125,7 +132,8 @@ const THEMES = {
       '--border': '#504945',
       '--chart-squat': '#fe8019',
       '--chart-press': '#83a598',
-      '--chart-deadlift': '#fabd2f'
+      '--chart-deadlift': '#fabd2f',
+      '--chart-row': '#d3869b'
     }
   }
 };

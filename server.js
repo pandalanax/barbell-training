@@ -20,14 +20,16 @@ const DEFAULT_SETTINGS = {
   exercises: {
     squat: { startingWeight: 20, progression: 5 },
     press: { startingWeight: 10, progression: 2.5 },
-    deadlift: { startingWeight: 30, progression: 5 }
+    deadlift: { startingWeight: 30, progression: 5 },
+    row: { startingWeight: 30, progression: 5 }
   }
 };
 
 const DEFAULT_PROGRESS = {
   squat: { weight: 20 },
   press: { weight: 10 },
-  deadlift: { weight: 30 }
+  deadlift: { weight: 30 },
+  row: { weight: 30 }
 };
 
 // Ensure data files exist

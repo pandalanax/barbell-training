@@ -38,10 +38,10 @@ barbell/
 
 ## Features
 
-- **Exercise tracking**: Squat, Press, Deadlift
+- **Exercise tracking**: Squat, Press, Deadlift, Row
 - **Warmup calculator**: Shows 5 warmup sets with plate breakdowns
 - **Plate calculator**: Shows which plates to load per side
-- **Linear progression**: Configurable weight increases after completing 3×5 (Squat/Press) or 1×5 (Deadlift)
+- **Linear progression**: Configurable weight increases after completing 3×5 (Squat/Press) or 1×5 (Deadlift/Row)
 - **History graph**: Visual progress over time with YYYY-MM-DD dates
 
 ## Data Format
@@ -53,7 +53,8 @@ barbell/
   "exercises": {
     "squat": { "startingWeight": 20, "progression": 5 },
     "press": { "startingWeight": 10, "progression": 2.5 },
-    "deadlift": { "startingWeight": 30, "progression": 5 }
+    "deadlift": { "startingWeight": 30, "progression": 5 },
+    "row": { "startingWeight": 30, "progression": 5 }
   }
 }
 ```
@@ -63,7 +64,8 @@ barbell/
 {
   "squat": { "weight": 20 },
   "press": { "weight": 10 },
-  "deadlift": { "weight": 30 }
+  "deadlift": { "weight": 30 },
+  "row": { "weight": 30 }
 }
 ```
 
