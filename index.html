@@ -618,23 +618,35 @@
     async function loadSettings() {
       try {
         const res = await fetch('/api/settings');
-        return await res.json();
+        const loaded = await res.json();
+        // Merge with defaults so new exercises don't crash on old data
+        return {
+          ...DEFAULT_SETTINGS,
+          ...loaded,
+          exercises: {
+            ...DEFAULT_SETTINGS.exercises,
+            ...(loaded.exercises || {})
+          }
+        };
       } catch (e) {
         return DEFAULT_SETTINGS;
       }
     }
 
     async function loadProgress() {
+      const defaults = {
+        squat: { weight: settings.exercises.squat.startingWeight },
+        press: { weight: settings.exercises.press.startingWeight },
+        deadlift: { weight: settings.exercises.deadlift.startingWeight },
+        row: { weight: settings.exercises.row.startingWeight }
+      };
       try {
         const res = await fetch('/api/progress');
-        return await res.json();
+        const loaded = await res.json();
+        // Merge with defaults so new exercises get starting weights
+        return { ...defaults, ...loaded };
       } catch (e) {
-        return {
-          squat: { weight: settings.exercises.squat.startingWeight },
-          press: { weight: settings.exercises.press.startingWeight },
-          deadlift: { weight: settings.exercises.deadlift.startingWeight },
-          row: { weight: settings.exercises.row.startingWeight }
-        };
+        return defaults;
       }
     }
 

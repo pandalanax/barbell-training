@@ -365,7 +365,16 @@
     async function loadSettings() {
       try {
         const res = await fetch('/api/settings');
-        settings = await res.json();
+        const loaded = await res.json();
+        // Merge with defaults so new exercises don't crash on old data
+        settings = {
+          ...DEFAULT_SETTINGS,
+          ...loaded,
+          exercises: {
+            ...DEFAULT_SETTINGS.exercises,
+            ...(loaded.exercises || {})
+          }
+        };
       } catch (e) {
         settings = { ...DEFAULT_SETTINGS };
       }
